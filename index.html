@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>An Important Alert ⚠️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#EDE6FF;
+    color:#3C1F66;
+    overflow:hidden;
+    text-align:center;
+}
+
+/* 🌸 Background */
+.bg{
+    position:fixed;
+    inset:0;
+    background:radial-gradient(circle at top,#FFFFFF,#E6DDFF,#D1C4F5);
+    z-index:-2;
+}
+
+/* 🎊 Confetti */
+.confetti{
+    position:fixed;
+    width:6px;
+    height:6px;
+    top:-10px;
+    animation:fall linear infinite;
+}
+@keyframes fall{
+    to{transform:translateY(110vh) rotate(360deg);}
+}
+
+/* 🕯 Candle */
+.candle{
+    width:80px;
+    height:180px;
+    background:linear-gradient(to bottom,#FFFFFF,#F4EEFF);
+    margin:120px auto 20px;
+    border-radius:14px;
+    position:relative;
+    cursor:pointer;
+    box-shadow:0 10px 30px rgba(150,120,220,0.35);
+}
+
+.flame{
+    width:30px;
+    height:50px;
+    background:radial-gradient(circle,#FFD27D,#FF8C42);
+    border-radius:50%;
+    position:absolute;
+    top:-45px;
+    left:25px;
+    animation:flicker 0.2s infinite alternate;
+    box-shadow:0 0 25px rgba(255,170,90,0.9);
+}
+@keyframes flicker{
+    from{transform:scale(1) rotate(-2deg);}
+    to{transform:scale(1.1) rotate(2deg);}
+}
+
+/* ✍️ Typing */
+.typing{
+    font-size:22px;
+    margin-top:20px;
+    min-height:60px;
+    color:#4A2D73;
+}
+
+/* 💌 WAIT SCREEN */
+.waitScreen{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg,#F6F2FF,#DED2FF);
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    z-index:10;
+    animation:fadeIn 2s forwards;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+.waitScreen h2{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.waitScreen p{
+    font-size:18px;
+    max-width:320px;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+.timer{
+    font-size:26px;
+    font-weight:600;
+    color:#5A3B91;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:0.6;}
+    50%{opacity:1;}
+    100%{opacity:0.6;}
+}
+
+/* 💖 Floating hearts */
+.heart{
+    position:fixed;
+    bottom:-20px;
+    font-size:18px;
+    animation:float 6s linear infinite;
+    opacity:0.7;
+}
+@keyframes float{
+    to{
+        transform:translateY(-110vh);
+        opacity:0;
+    }
+}
+
+/* 🖼 Gallery */
+.gallery{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#F6F2FF,#E3DAFF);
+}
+
+.gallery img{
+    max-width:92%;
+    max-height:92%;
+    object-fit:contain;
+    border-radius:18px;
+    box-shadow:0 20px 60px rgba(120,90,200,0.45);
+}
+
+/* 🌙 Final */
+.final{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg,#EDE6FF,#CFC2F3);
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+}
+
+.final h1{
+    font-size:34px;
+    animation:zoom 6s forwards;
+}
+@keyframes zoom{
+    to{transform:scale(1.4);}
+}
+
+.replay{
+    margin-top:40px;
+    padding:14px 34px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(135deg,#9C6BFF,#C29BFF);
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<audio id="music" src="music.mp3" loop></audio>
+
+<div class="candle" id="candle">
+    <div class="flame" id="flame"></div>
+</div>
+
+<div class="typing" id="typing"></div>
+
+<!-- 💌 Wait Screen -->
+<div class="waitScreen" id="waitScreen">
+    <h2>Some moments deserve patience 💜</h2>
+    <p>
+        A little wait…  
+        for something beautiful,  
+        meaningful,  
+        and made just for you.
+    </p>
+    <div class="timer" id="waitTimer">Loading...</div>
+</div>
+
+<!-- 🖼 Gallery -->
+<div class="gallery" id="gallery">
+    <img id="photo" src="">
+</div>
+
+<!-- 🌙 Final -->
+<div class="final" id="final">
+    <h1>Once Again Happiest Birthday Divyaaa ❤️<br>– Manohar 💞✨</h1>
+    <button class="replay" onclick="location.reload()">Replay Memories</button>
+</div>
+
+<script>
+/* SETTINGS */
+let totalImages = 30;
+let wishes = [
+ "You are my favorite chapter 😌",
+ "Every smile of yours matters ❤️",
+ "You light up my world ✨",
+ "Memories feel warmer with you 💞",
+ "You are rare 🌸",
+ "My comfort, my calm 🤍"
+];
+
+let imgIndex = 1;
+
+/* Typing */
+let typing=document.getElementById("typing");
+let msg="Helllooooo Divyaaaa, Please Blow the Candle ";
+let idx=0;
+(function type(){
+    if(idx<msg.length){
+        typing.innerHTML+=msg[idx++];
+        setTimeout(type,100);
+    }
+})();
+
+/* Hearts */
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💜";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=4+Math.random()*4+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),8000);
+},700);
+
+/* Candle click */
+document.getElementById("candle").onclick=function(){
+    document.getElementById("flame").style.display="none";
+    document.getElementById("music").play();
+    document.getElementById("waitScreen").style.display="flex";
+    startWaitCountdown();
+};
+
+/* Countdown till 29 Dec */
+function startWaitCountdown(){
+    const timer=document.getElementById("waitTimer");
+    const target=new Date("December 29, 2025 00:00:00").getTime();
+
+    setInterval(()=>{
+        let now=new Date().getTime();
+        let diff=target-now;
+
+        if(diff<=0){
+            document.getElementById("waitScreen").style.display="none";
+            document.getElementById("gallery").style.display="flex";
+            showImages();
+            return;
+        }
+
+        let h=Math.floor(diff/(1000*60*60));
+        let m=Math.floor((diff%(1000*60*60))/(1000*60));
+        let s=Math.floor((diff%(1000*60))/1000);
+        timer.innerHTML=`${h}h ${m}m ${s}s`;
+    },1000);
+}
+
+/* Gallery */
+function showImages(){
+    let img=document.getElementById("photo");
+    typing.innerHTML=wishes[imgIndex%wishes.length];
+    img.src="photos/img"+imgIndex+".jpg";
+    imgIndex++;
+
+    if(imgIndex<=totalImages){
+        setTimeout(showImages,3000);
+    }else{
+        setTimeout(()=>{
+            document.getElementById("gallery").style.display="none";
+            document.getElementById("final").style.display="flex";
+        },3000);
+    }
+}
+</script>
+
+</body>
+</html>
